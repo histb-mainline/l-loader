@@ -9,6 +9,7 @@
 # SPDX-License-Identifier:	GPL-2.0+
 #
 
+RECOVERY ?= 0
 ARM_TRUSTED_FIRMWARE ?= ../arm-trusted-firmware/
 ARM_TF_INCLUDE ?= $(ARM_TRUSTED_FIRMWARE)/plat/hisilicon/poplar/include
 
@@ -18,6 +19,10 @@ CROSS_COMPILE ?= arm-linux-gnueabihf-
 CC=$(CROSS_COMPILE)gcc
 LD=$(CROSS_COMPILE)ld
 OBJCOPY=$(CROSS_COMPILE)objcopy
+
+ifeq ($(RECOVERY),1)
+CFLAGS ?= -DRECOVERY
+endif
 
 # Use build date/time and Git commit id to form a version message
 VDATE=$(shell date '+%Y/%m/%d %H:%M:%S%z')
@@ -57,7 +62,8 @@ l-loader: start.o debug.o l-loader.lds
 	$(LD) -Bstatic -Tl-loader.lds start.o debug.o -o $@
 
 start.o: start.S
-	$(CC) -c -o $@ $< -I$(ARM_TF_INCLUDE) -DVERSION_MSG=$(VERSION_MSG)
+	$(CC) -c -o $@ $< -I$(ARM_TF_INCLUDE) -DVERSION_MSG=$(VERSION_MSG) \
+		$(CFLAGS)
 
 start.S: atf/bl1.bin atf/fip.bin
 
@@ -71,7 +77,7 @@ debug.o: debug.S
 	$(CC) -c -o $@ $<
 
 l-loader.lds: l-loader.ld.in
-	$(CPP) -P -o $@ - < $< -I$(ARM_TF_INCLUDE)
+	$(CPP) -P -o $@ - < $< -I$(ARM_TF_INCLUDE) $(CFLAGS)
 
 clean:
 	@rm -f *.o l-loader.lds l-loader l-loader.bin fastboot.bin \
