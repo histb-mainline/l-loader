@@ -54,7 +54,7 @@ Compilation
 
 - pull and build the ATF:<br/>
 
-  $ git clone https://github.com/Linaro/poplar-arm-trusted-firmware.git <br/>
+  $ git clone https://github.com/96boards-poplar/arm-trusted-firmware.git <br/>
   $ cd arm-trusted-firmware<br/>
   $ make CROSS_COMPILE=aarch64-linux-gnu- all fip \
 		SPD=none BL33=~/poplar/bin/u-boot.bin DEBUG=1 PLAT=poplar <br\>
