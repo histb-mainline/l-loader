@@ -9,7 +9,7 @@
 # SPDX-License-Identifier:	GPL-2.0+
 #
 
-ARM_TRUSTED_FIRMWARE ?= ../poplar-arm-trusted-firmware/
+ARM_TRUSTED_FIRMWARE ?= ../arm-trusted-firmware/
 ARM_TF_INCLUDE ?= $(ARM_TRUSTED_FIRMWARE)/plat/hisilicon/poplar/include
 
 # Must use a 32-bit ARM cross-compiler
