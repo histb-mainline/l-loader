@@ -39,12 +39,12 @@ VERSION_MSG='"LOADER:  Built $(VDATE) Commit-id $(VCOMMIT)"'
 # constant here is higher than the practical maximum.
 LLOADER_LEN=1984K
 
-all: fastboot.bin bootloader.bin
+all: fastboot.bin loader.bin
 
 fastboot.bin: l-loader.bin
 	@cp $< $@
 
-bootloader.bin: l-loader.bin
+loader.bin: l-loader.bin
 	@dd status=none if=$< of=$@ bs=512 skip=1 conv=notrunc
 
 l-loader.bin: l-loader
@@ -73,7 +73,7 @@ l-loader.lds: l-loader.ld.in
 
 clean:
 	@rm -f *.o l-loader.lds l-loader l-loader.bin fastboot.bin \
-		bootloader.bin
+		loader.bin
 
 distclean: clean
 	@rm -f *.orig cscope.* atf/bl1.bin atf/fip.bin
