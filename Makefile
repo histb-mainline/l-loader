@@ -39,13 +39,10 @@ VERSION_MSG='"LOADER:  Built $(VDATE) Commit-id $(VCOMMIT)"'
 # constant here is higher than the practical maximum.
 LLOADER_LEN=1984K
 
-all: fastboot.bin
+all: fastboot.bin bootloader.bin
 
-fastboot.bin: mbr.bin bootloader.bin
-	@cat mbr.bin bootloader.bin > $@
-
-mbr.bin: generate_mbr.sh
-	bash $<
+fastboot.bin: l-loader.bin
+	@cp $< $@
 
 bootloader.bin: l-loader.bin
 	@dd status=none if=$< of=$@ bs=512 skip=1 conv=notrunc
@@ -75,7 +72,7 @@ l-loader.lds: l-loader.ld.in
 	$(CPP) -P -o $@ - < $< -I$(ARM_TF_INCLUDE)
 
 clean:
-	@rm -f *.o l-loader.lds l-loader l-loader.bin mbr.bin fastboot.bin \
+	@rm -f *.o l-loader.lds l-loader l-loader.bin fastboot.bin \
 		bootloader.bin
 
 distclean: clean
