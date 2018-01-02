@@ -46,6 +46,8 @@ fastboot.bin: l-loader.bin
 
 loader.bin: l-loader.bin
 	@dd status=none if=$< of=$@ bs=512 skip=1 conv=notrunc
+	@cp $@ installer/recovery_files/
+	@gzip installer/recovery_files/$@
 
 l-loader.bin: l-loader
 	$(OBJCOPY) -O binary $< $@
@@ -73,7 +75,7 @@ l-loader.lds: l-loader.ld.in
 
 clean:
 	@rm -f *.o l-loader.lds l-loader l-loader.bin fastboot.bin \
-		loader.bin
+		loader.bin installer/recovery_files/loader.bin.gz
 
 distclean: clean
 	@rm -f *.orig cscope.* atf/bl1.bin atf/fip.bin
