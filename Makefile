@@ -9,7 +9,7 @@
 # SPDX-License-Identifier:	GPL-2.0+
 #
 
-RECOVERY ?= 1
+RECOVERY ?= 0
 ARM_TRUSTED_FIRMWARE ?= ../arm-trusted-firmware/
 ARM_TF_INCLUDE ?= $(ARM_TRUSTED_FIRMWARE)/plat/hisilicon/poplar/include
 
