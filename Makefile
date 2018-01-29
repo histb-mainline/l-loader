@@ -44,10 +44,14 @@ VERSION_MSG='"LOADER:  Built $(VDATE) Commit-id $(VCOMMIT)"'
 # constant here is higher than the practical maximum.
 LLOADER_LEN=1984K
 
+ifeq ($(RECOVERY),1)
 all: fastboot.bin loader.bin
 
 fastboot.bin: l-loader.bin
 	@cp $< $@
+else
+all: loader.bin
+endif
 
 loader.bin: l-loader.bin
 	@dd status=none if=$< of=$@ bs=512 skip=1 conv=notrunc
