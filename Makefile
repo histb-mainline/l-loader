@@ -11,7 +11,7 @@
 
 RECOVERY ?= 0
 ARM_TRUSTED_FIRMWARE ?= ../arm-trusted-firmware/
-ARM_TF_INCLUDE ?= $(ARM_TRUSTED_FIRMWARE)/plat/hisilicon/poplar/include
+ARM_TF_INCLUDE ?= $(ARM_TRUSTED_FIRMWARE)/plat/hisilicon/hi3798mv2x/include
 
 # Must use a 32-bit ARM cross-compiler
 CROSS_COMPILE ?= arm-linux-gnueabihf-
