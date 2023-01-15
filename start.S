@@ -195,7 +195,7 @@ reg_list_end:
  * +--------------------------------------------+
  */
 .=BL1_OFFSET
-.incbin "atf/bl1.bin"
+ .incbin "atf/bl1.bin"
 
 .=BL2_OFFSET
 .skip BL2_SIZE,0
@@ -223,6 +223,13 @@ wait_mux_finish:
 
 	/* init serial */
 	bl	uart_init
+
+	/* eMMC CRG init */
+	ldr	r4, =0xf8a220a0
+	ldr	r1, [r4]
+	orr 	r1, r1, #3 // Enable all clocks
+	bic	r1, r1, #8 // bring eMMC out of reset
+	str	r1, [r4]
 
 	/* enable jtag support  */
 	mov	r1, #0x130
@@ -293,7 +300,7 @@ str_aarch64:
  */
 #ifdef RECOVERY
 .section .fip,#alloc
-.incbin "atf/fip.bin"
+ .incbin "atf/fip.bin"
 #endif
 
 .section .tail,#alloc
@@ -315,7 +322,7 @@ _total_boot_area_end:
 
 #ifndef RECOVERY
 .section .fip,#alloc
-.incbin "atf/fip.bin"
+ .incbin "atf/fip.bin"
 #endif
 
 .global _boot_end
