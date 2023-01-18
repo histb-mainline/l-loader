@@ -75,6 +75,10 @@
  */
 #define BOOT_MSG				\
 "\nLOADER:  Switched to aarch64 mode\nLOADER:  Entering ARM TRUSTED FIRMWARE\nLOADER:  CPU0 executes at 0x"
+#define EMMC_MSG				\
+"\nLOADER: Initializing eMMC\n"
+#define USB_MSG					\
+"LOADER: Initializing USB phy\n"
 
 .global start
 start:
@@ -202,7 +206,6 @@ reg_list_end:
 
 .=BL31_OFFSET
 .skip BL31_SIZE,0
-
 /*
  * +--------------------------------------------+
  * | 9. Reset and debug code			|
@@ -212,6 +215,8 @@ reg_list_end:
 reset:
 	isb
 
+	/* Setup a stack */
+	ldr	sp, =0x100
 	/* loop until the system is ready; REG_SC_GEN1 is 0 at power-on  */
 	ldr	r0, =REG_BASE_SCTL
 	mov	r1, #1
@@ -225,11 +230,18 @@ wait_mux_finish:
 	bl	uart_init
 
 	/* eMMC CRG init */
+	ldr	r0, =#str_emmc
+	bl	printascii
 	ldr	r4, =0xf8a220a0
 	ldr	r1, [r4]
 	orr 	r1, r1, #3 // Enable all clocks
-	bic	r1, r1, #8 // bring eMMC out of reset
+	bic	r1, r1, #16 // bring eMMC out of reset
 	str	r1, [r4]
+	
+	/* usb phy init */
+	ldr	r0, =#str_usbphy
+	bl	printascii
+	bl	usb_phy_init
 
 	/* enable jtag support  */
 	mov	r1, #0x130
@@ -266,9 +278,9 @@ wait_mux_finish:
 
 	mov	r0, #'\n'
 	bl	printch
-	adr	r0, str_version
+	ldr	r0, =#str_version
 	bl	printascii
-	adr	r0, str_aarch64
+	ldr	r0, =#str_aarch64
 	bl	printascii
 	ldr	r0, =BL1_BASE
 	bl	printhex
@@ -288,11 +300,15 @@ wait_mux_finish:
 panic:
 	b	panic
 
+.section .rodata
 str_version:
 	.asciz	VERSION_MSG
 str_aarch64:
 	.asciz	BOOT_MSG
-
+str_emmc:
+	.asciz	EMMC_MSG
+str_usbphy:
+	.asciz	USB_MSG
 /*
  * +--------------------------------------------+
  * | 8. ARM Trusted Firmware (FIP)	|

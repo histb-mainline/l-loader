@@ -14,13 +14,14 @@ ARM_TRUSTED_FIRMWARE ?= ../arm-trusted-firmware/
 ARM_TF_INCLUDE ?= $(ARM_TRUSTED_FIRMWARE)/plat/hisilicon/hi3798mv2x/include
 
 # Must use a 32-bit ARM cross-compiler
-CROSS_COMPILE ?= arm-linux-gnueabihf-
+CROSS_COMPILE ?= arm-none-eabi-
 
 CC=$(CROSS_COMPILE)gcc
 LD=$(CROSS_COMPILE)ld
 OBJCOPY=$(CROSS_COMPILE)objcopy
 
 CFLAGS := -march=armv7-a
+CPPFLAGS := -march=armv7-a
 ifeq ($(RECOVERY),1)
 CFLAGS += -DRECOVERY
 endif
@@ -43,7 +44,7 @@ VERSION_MSG='"LOADER:  Built $(VDATE) Commit-id $(VCOMMIT)"'
 # Despite this, the "l-loader.bin" won't work if it's more than
 # about 1029KB--arising from a FIP size of 790016 bytes--so the
 # constant here is higher than the practical maximum.
-LLOADER_LEN=1984K
+LLOADER_LEN=1024K
 
 ifeq ($(RECOVERY),1)
 all: fastboot.bin loader.bin
@@ -63,8 +64,8 @@ l-loader.bin: l-loader
 	$(OBJCOPY) -O binary $< $@
 	truncate -s ${LLOADER_LEN} $@
 
-l-loader: start.o debug.o l-loader.lds
-	$(LD) -Bstatic -Tl-loader.lds start.o debug.o -o $@
+l-loader: start.o debug.o usb_init.o timer.o l-loader.lds
+	$(LD) -Bstatic -Tl-loader.lds start.o debug.o usb_init.o timer.o -o $@
 
 start.o: start.S
 	$(CC) -c -o $@ $< -I$(ARM_TF_INCLUDE) -DVERSION_MSG=$(VERSION_MSG) \
