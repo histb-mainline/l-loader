@@ -79,6 +79,8 @@
 "\nLOADER: Initializing eMMC\n"
 #define USB_MSG					\
 "LOADER: Initializing USB phy\n"
+#define CRG40_MSG				\
+"LOADER: CRG40="
 
 .global start
 start:
@@ -232,11 +234,19 @@ wait_mux_finish:
 	/* eMMC CRG init */
 	ldr	r0, =#str_emmc
 	bl	printascii
+	ldr	r0, =#str_crg40
+	bl	printascii
 	ldr	r4, =0xf8a220a0
 	ldr	r1, [r4]
-	orr 	r1, r1, #3 // Enable all clocks
-	bic	r1, r1, #16 // bring eMMC out of reset
+	ldr	r2, =0x77710
+	bic	r1, r1, r2 // bring eMMC out of reset, reset clk_sel, reset phase to 0 deg
+	ldr	r2, =0x44203
+	orr 	r1, r1, r2 // Enable all clocks, Use 25MHz clocks, set phase to 180 deg
 	str	r1, [r4]
+	mov	r0, r1
+	bl	printhex
+	mov	r0, #'\n'
+	bl	printch
 	
 	/* usb phy init */
 	ldr	r0, =#str_usbphy
@@ -305,6 +315,8 @@ str_version:
 	.asciz	VERSION_MSG
 str_aarch64:
 	.asciz	BOOT_MSG
+str_crg40:
+	.asciz	CRG40_MSG
 str_emmc:
 	.asciz	EMMC_MSG
 str_usbphy:
