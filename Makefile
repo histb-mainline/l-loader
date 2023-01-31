@@ -21,7 +21,7 @@ LD=$(CROSS_COMPILE)ld
 OBJCOPY=$(CROSS_COMPILE)objcopy
 
 CFLAGS := -march=armv7-a
-CPPFLAGS := -march=armv7-a
+CPPFLAGS :=
 ifeq ($(RECOVERY),1)
 CFLAGS += -DRECOVERY
 endif
