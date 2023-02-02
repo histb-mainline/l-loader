@@ -1,3 +1,4 @@
+#include "utils.h"
 #define PERI_USB3                       (0xF8A20000 + 0x12c)
 #define USB2_2P_SS_WORD_IF_I            (1 << 0)
 #define USB2_2P_SS_ENA_INCR16_I         (1 << 9)
@@ -38,10 +39,6 @@
 #define USB2_PHY01_REGBASE               0xf9865000
 #define USB2_PORT1_REGBASE               0x400
 
-#define writel(x, y) *(volatile unsigned int *)(y) = (x)
-#define readl(x) *(volatile unsigned int *)(x)
-#define mdelay(s) udelay((s) * 1000)
-extern void udelay(unsigned int usec);
 /******************************************************************************/
 
 static void inno_phy_config_2p_1(void)
