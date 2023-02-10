@@ -307,6 +307,8 @@ wait_mux_finish:
 	isb
 	wfi
 
+.global	panic
+.type	panic, %function
 panic:
 	b	panic
 

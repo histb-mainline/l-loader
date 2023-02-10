@@ -34,7 +34,7 @@ void udelay(unsigned int usecs)
 	unsigned long base = TIMER23_BASE;
 	int val;
 
-	if(clocks < usecs) return; // multiply overflow
+	if(clocks < usecs) panic(); // multiply overflow
 	// Step 1: set counting mode(one shot, divide by 16, 32 bit)
 	val = TIMER_ONESHOT \
 	      | TIMER_TIMERSIZE_32BIT \

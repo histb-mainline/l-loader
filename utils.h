@@ -2,3 +2,4 @@
 #define readl(x) *(volatile unsigned int *)(x)
 #define mdelay(s) udelay((s) * 1000)
 void udelay(unsigned int usec);
+void _Noreturn panic(void);
