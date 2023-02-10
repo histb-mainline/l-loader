@@ -180,7 +180,7 @@ static int usb_cpu_init(void)
 	writel(reg, PERI_USB3);
 	udelay(100);
 #else
-	//* write default value. */
+	/* write default value. */
 	reg = readl(PERI_USB3);
 	reg &= ~(USB2_2P_SS_WORD_IF_I);      /* 8bit */
 	reg &= ~(USB2_2P_SS_ENA_INCR16_I);      /* 16 bit burst disable */
