@@ -63,7 +63,7 @@ loader.bin: l-loader.bin
 l-loader.bin: l-loader
 	$(OBJCOPY) -O binary $< $@
 	truncate -s ${LLOADER_LEN} $@
-	scripts/truncate_minimal.py $@
+	scripts/truncate_minimal.py --align 1024 $@
 
 l-loader: start.o debug.o usb_init.o timer.o l-loader.lds
 	$(LD) -Bstatic -Tl-loader.lds start.o debug.o usb_init.o timer.o -o $@

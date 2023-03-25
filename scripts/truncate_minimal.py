@@ -1,18 +1,27 @@
 #!/usr/bin/python3
 
 import sys
+from optparse import OptionParser
+
 # Strip off all '\x00' suffixes
 
-def truncate(file):
+def truncate(file, align):
     txt = file.read()
     trunc = txt.rstrip(b'\x00')
-    file.truncate(len(trunc))
-
+    length = len(trunc)
+    if len(trunc) % align:
+        # Align to the requirement
+        length += align - 1
+        length -= length % align
+    file.truncate(length)
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print(f"Usage: {sys.argv[0]} filename")
-        sys.exit(1)
-    with open(sys.argv[1], "r+b") as f:
-        truncate(f)
-
+    usage = "Usage: %prog [options] filename"
+    parser = OptionParser(usage = usage)
+    parser.add_option("-a", "--align", action = "store", dest = "align", type="int", help = "align up to given size", default = 1)
+    options, args = parser.parse_args()
+    if len(args) != 1:
+        parser.print_usage()
+        exit(1)
+    with open(args[0], "r+b") as file:
+        truncate(file, options.align)
