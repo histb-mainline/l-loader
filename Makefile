@@ -9,6 +9,7 @@
 # SPDX-License-Identifier:	GPL-2.0+
 #
 
+PROPRIETARY_BINARY = bin/AUXCODE.img bin/BOOT_0.reg bin/BOOT_1.reg bin/BOOT_2.reg
 RECOVERY ?= 0
 ARM_TRUSTED_FIRMWARE ?= ../arm-trusted-firmware/
 ARM_TF_INCLUDE ?= $(ARM_TRUSTED_FIRMWARE)/plat/hisilicon/hi3798mv2x/include
@@ -72,7 +73,13 @@ start.o: start.S
 	$(CC) -c -o $@ $< -I$(ARM_TF_INCLUDE) -DVERSION_MSG=$(VERSION_MSG) \
 		$(CFLAGS)
 
-start.S: atf/bl1.bin atf/fip.bin
+start.S: atf/bl1.bin atf/fip.bin $(PROPRIETARY_BINARY)
+
+$(PROPRIETARY_BINARY):
+	@echo ""
+	@echo Error: $@ is missing\; it must be extracted from stock fastboot.bin.
+	@echo ""
+	@false
 
 atf/bl1.bin atf/fip.bin:
 	@echo ""
