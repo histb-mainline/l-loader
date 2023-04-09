@@ -1,6 +1,7 @@
 # Binary files, should be extracted from vendor fastboot or compiled from other sources
 /atf
 /bin
+/installer
 
 # generated objects
 *.o
