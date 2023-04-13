@@ -58,8 +58,6 @@ endif
 
 loader.bin: l-loader.bin
 	@dd status=none if=$< of=$@ bs=512 skip=1 conv=notrunc
-	@cp $@ installer/recovery_files/
-	@gzip installer/recovery_files/$@
 
 l-loader.bin: l-loader
 	$(OBJCOPY) -O binary $< $@
