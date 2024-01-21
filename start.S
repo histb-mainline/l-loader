@@ -304,11 +304,13 @@ wait_mux_finish:
 	mcr p15, 0, r2, c12, c0, 2
 	isb
 	wfi
+.size reset, .-reset
 
 .global	panic
 .type	panic, %function
 panic:
 	b	panic
+.size panic, .-panic
 
 .section .rodata
 str_version:

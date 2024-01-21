@@ -53,6 +53,7 @@ uart_init:
 	bx	lr
 uart_base_addr_L0:
 	.word DEBUG_UART_PHYS
+.size uart_init, .-uart_init
 
 @-------------------------------------------
 @  Macros
