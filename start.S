@@ -218,7 +218,7 @@ reset:
 	isb
 
 	/* Setup a stack */
-	ldr	sp, =0x100
+	ldr	sp, =0x1000
 	/* loop until the system is ready; REG_SC_GEN1 is 0 at power-on  */
 	ldr	r0, =REG_BASE_SCTL
 	mov	r1, #1
