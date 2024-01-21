@@ -238,13 +238,9 @@ wait_mux_finish:
 	bl	printascii
 	ldr	r0, =#str_crg40
 	bl	printascii
-	ldr	r4, =0xf8a220a0
-	ldr	r1, [r4]
-	ldr	r2, =0x77710
-	bic	r1, r1, r2 // bring eMMC out of reset, reset clk_sel, reset phase to 0 deg
-	ldr	r2, =0x44203
-	orr 	r1, r1, r2 // Enable all clocks, Use 25MHz clocks, set phase to 180 deg
-	str	r1, [r4]
+	ldr	r0, =0xf8a220a0 // All taken from downstream fastboot driver
+	ldr	r1, =0x47103 // Enable all clocks, deassert all resets, sample phase 315, drive phase 180, clock rate 50MHz
+	str	r1, [r0]
 	mov	r0, r1
 	bl	printhex
 	mov	r0, #'\n'
