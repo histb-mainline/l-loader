@@ -237,6 +237,8 @@ wait_mux_finish:
 	ldr	r0, =0xf8a220a0 // All taken from downstream fastboot driver
 	ldr	r1, =0x47103 // Enable all clocks, deassert all resets, sample phase 315, drive phase 180, clock rate 50MHz
 	str	r1, [r0]
+	ldr	r1, =0x40103 // Enable all clocks, deassert all resets, sample phase 0, drive phase 180, clock rate 50MHz
+	str	r1, [r0], #-4
 	mov	r0, #'\n'
 	bl	printch
 	
