@@ -81,6 +81,8 @@
 "LOADER: Initializing USB phy\n"
 #define CRG40_MSG				\
 "LOADER: CRG40="
+#define RECOVERY_MSG				\
+"Warning: Running in recovery mode\n"
 
 .global start
 start:
@@ -292,6 +294,10 @@ wait_mux_finish:
 	bl	printascii
 	ldr	r0, =#str_aarch64
 	bl	printascii
+#ifdef RECOVERY
+	ldr	r0, =#str_recovery
+	bl	printascii
+#endif
 	ldr	r0, =BL1_BASE
 	bl	printhex
 	mov	r0, #'\n'
@@ -323,6 +329,11 @@ str_emmc:
 	.asciz	EMMC_MSG
 str_usbphy:
 	.asciz	USB_MSG
+#ifdef RECOVERY
+str_recovery:
+	.asciz	RECOVERY_MSG
+#endif
+
 /*
  * +--------------------------------------------+
  * | 8. ARM Trusted Firmware (FIP)	|
