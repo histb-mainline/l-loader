@@ -79,8 +79,6 @@
 "\nLOADER: Initializing eMMC\n"
 #define USB_MSG					\
 "LOADER: Initializing USB phy\n"
-#define CRG40_MSG				\
-"LOADER: CRG40="
 #define RECOVERY_MSG				\
 "Warning: Running in recovery mode\n"
 
@@ -236,13 +234,9 @@ wait_mux_finish:
 	/* eMMC CRG init */
 	ldr	r0, =#str_emmc
 	bl	printascii
-	ldr	r0, =#str_crg40
-	bl	printascii
 	ldr	r0, =0xf8a220a0 // All taken from downstream fastboot driver
 	ldr	r1, =0x47103 // Enable all clocks, deassert all resets, sample phase 315, drive phase 180, clock rate 50MHz
 	str	r1, [r0]
-	mov	r0, r1
-	bl	printhex
 	mov	r0, #'\n'
 	bl	printch
 	
@@ -319,8 +313,6 @@ str_version:
 	.asciz	VERSION_MSG
 str_aarch64:
 	.asciz	BOOT_MSG
-str_crg40:
-	.asciz	CRG40_MSG
 str_emmc:
 	.asciz	EMMC_MSG
 str_usbphy:
