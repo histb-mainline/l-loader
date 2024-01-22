@@ -64,8 +64,8 @@ l-loader.bin: l-loader
 	truncate -s ${LLOADER_LEN} $@
 	scripts/truncate_minimal.py --align 1024 $@
 
-l-loader: start.o debug.o usb_init.o timer.o l-loader.lds
-	$(LD) -Bstatic -Tl-loader.lds start.o debug.o usb_init.o timer.o -o $@
+l-loader: l-loader.lds start.o debug.o usb_init.o timer.o
+	$(LD) -Bstatic -T$^ -o $@
 
 start.o: start.S
 	$(CC) -c -o $@ $< -I$(ARM_TF_INCLUDE) -DVERSION_MSG=$(VERSION_MSG) \
@@ -85,15 +85,12 @@ atf/bl1.bin atf/fip.bin:
 	@echo ""
 	@false
 
-debug.o: debug.S
-	$(CC) -c -o $@ $<
-
 l-loader.lds: l-loader.ld.in
 	$(CPP) -P -o $@ - < $< -I$(ARM_TF_INCLUDE) $(CFLAGS)
 
 clean:
 	@rm -f *.o l-loader.lds l-loader l-loader.bin fastboot.bin \
-		loader.bin installer/recovery_files/loader.bin.gz
+		loader.bin
 
 distclean: clean
 	@rm -f *.orig cscope.* atf/bl1.bin atf/fip.bin
