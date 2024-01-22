@@ -15,7 +15,6 @@
 #define TIMER_TIMERPRE_NODIV	(0 << 2)
 #define TIMER_TIMERPRE_DIV16	(1 << 2)
 #define TIMER_TIMERPRE_DIV256	(2 << 2)
-#define TIMER_TIMERPRE_DIV256	(2 << 2)
 
 #define TIMER_INTEN		(1 << 5)
 #define TIMER_TIMERMODE_FREE	(0 << 6)
