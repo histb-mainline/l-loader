@@ -40,7 +40,7 @@ void udelay(unsigned int usecs)
 	      | TIMER_TIMERPRE_DIV16 \
 	      | TIMER_TIMERMODE_FREE;
 	writel(val, base + TIMER_CONTROL); // freq(24MHz) / 16 = 1.5MHz, 32bit
-	
+
 	// Step 2: set init value, and wait until TIMERx_VALUE updates since PCLK is significantly slower than CPU( 24 MHz vs. 1600 MHz)
 	writel(clocks, base + TIMER_LOAD);
 	while(readl(base + TIMER_VALUE) != clocks);
