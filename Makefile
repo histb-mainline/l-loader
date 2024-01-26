@@ -47,6 +47,8 @@ VERSION_MSG='"LOADER:  Built $(VDATE) Commit-id $(VCOMMIT)"'
 # constant here is higher than the practical maximum.
 LLOADER_LEN=1024K
 
+.PHONY: all clean distclean
+
 ifeq ($(RECOVERY),1)
 all: fastboot.bin loader.bin
 
