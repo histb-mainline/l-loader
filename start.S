@@ -245,17 +245,6 @@ wait_mux_finish:
 	bl	printascii
 	bl	usb_phy_init
 
-	/* enable jtag support  */
-	mov	r1, #0x130
-	ldr	r4, =0xf8a21000
-	mov	r5, #0x0ec
-	mov	r6, #0x100
-0:
-	str	r1, [r4, r5]
-	add	r5, r5, #0x04
-	cmp	r5, r6
-	ble	0b
-
 	/* prepare the aarch64 jump address */
 	ldr	r4, =REG_PERI_CPU_RVBARADDR
 	ldr	r5, =REG_PERI_CPU_RVBARADDR_OFFSET
