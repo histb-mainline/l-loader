@@ -1,3 +1,10 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Copyright 2023 (r) Yang Xiwen <forbidden405@foxmail.com>
+ *
+ * Written based on Hi3798CV200 Datasheet 3 - System Chap.10 Timer
+ * Tested on a Hi3798MV200 based SoC
+ */
 #include "utils.h"
 
 #define TIMER23_BASE 0xF8A29000
