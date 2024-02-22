@@ -319,11 +319,11 @@ str_recovery:
  * +--------------------------------------------+
  */
 #ifdef RECOVERY
-.section .fip,#alloc
+.section .fip, "a"
  .incbin "atf/fip.bin"
 #endif
 
-.section .tail,#alloc
+.section .tail, "a"
 
 _checked_area_reserve:
 	.fill 0x10,1,0
@@ -341,7 +341,7 @@ _boot_sign_area:
 _total_boot_area_end:
 
 #ifndef RECOVERY
-.section .fip,#alloc
+.section .fip, "a"
  .incbin "atf/fip.bin"
 #endif
 
