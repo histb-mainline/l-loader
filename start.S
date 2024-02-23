@@ -75,10 +75,6 @@
  */
 #define BOOT_MSG				\
 "\nLOADER:  Switched to aarch64 mode\nLOADER:  Entering ARM TRUSTED FIRMWARE\nLOADER:  CPU0 executes at 0x"
-#define EMMC_MSG				\
-"\nLOADER: Initializing eMMC\n"
-#define USB_MSG					\
-"LOADER: Initializing USB phy\n"
 #define RECOVERY_MSG				\
 "Warning: Running in recovery mode\n"
 
@@ -232,19 +228,12 @@ wait_mux_finish:
 	bl	uart_init
 
 	/* eMMC CRG init */
-	ldr	r0, =#str_emmc
-	bl	printascii
 	ldr	r0, =0xf8a220a0 // All taken from downstream fastboot driver
 	ldr	r1, =0x47103 // Enable all clocks, deassert all resets, sample phase 315, drive phase 180, clock rate 50MHz
 	str	r1, [r0]
 	ldr	r1, =0x40103 // Enable all clocks, deassert all resets, sample phase 0, drive phase 180, clock rate 50MHz
 	str	r1, [r0, #-4]
 	
-	/* usb phy init */
-	ldr	r0, =#str_usbphy
-	bl	printascii
-	bl	usb_phy_init
-
 	/* prepare the aarch64 jump address */
 	ldr	r4, =REG_PERI_CPU_RVBARADDR
 	ldr	r5, =REG_PERI_CPU_RVBARADDR_OFFSET
@@ -304,10 +293,6 @@ str_version:
 	.asciz	VERSION_MSG
 str_aarch64:
 	.asciz	BOOT_MSG
-str_emmc:
-	.asciz	EMMC_MSG
-str_usbphy:
-	.asciz	USB_MSG
 #ifdef RECOVERY
 str_recovery:
 	.asciz	RECOVERY_MSG
