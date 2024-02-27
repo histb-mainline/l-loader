@@ -233,7 +233,7 @@ wait_mux_finish:
 	str	r1, [r0]
 	ldr	r1, =0x40103 // Enable all clocks, deassert all resets, sample phase 0, drive phase 180, clock rate 50MHz
 	str	r1, [r0, #-4]
-	
+
 	/* prepare the aarch64 jump address */
 	ldr	r4, =REG_PERI_CPU_RVBARADDR
 	ldr	r5, =REG_PERI_CPU_RVBARADDR_OFFSET
