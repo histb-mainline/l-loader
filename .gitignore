@@ -1,6 +1,11 @@
-atf/bl1.bin
-atf/fip.bin
-l-loader
-l-loader.bin
-temp.bin
-				     
+# Binary files, should be extracted from vendor fastboot or compiled from other sources
+/atf
+/bin
+/installer
+
+# generated objects
+*.o
+*.orig
+*.bin
+*.lds
+/l-loader

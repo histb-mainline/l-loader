@@ -48,11 +48,11 @@
 #define CONFIG_PARAM_AREA_SIG_POS		(0x2EC0)
 #define CONFIG_SUPPORT_MULTI_PARAM_POS		(0x2FE0)
 #define CONFIG_AUXCODE_AREA_POS			(0x3000)
-#define CONFIG_CHECKED_AREA_START		(0x6500)
+#define CONFIG_CHECKED_AREA_START		(0x8500)
 
 #define CONFIG_UNCHK_SIZE			(0x100)
 #define CONFIG_SCS_HASHED_AREA_OFF_VAL		(0x100)
-#define CONFIG_AUXAREA_LEN			(0x3400)
+#define CONFIG_AUXAREA_LEN			(0x5400)
 
 #define CONFIG_BOOT_FLAG_POS			(0x2FC4)
 #define CONFIG_BOOT_FLAG_VAL			(0x435A590D)
@@ -75,6 +75,8 @@
  */
 #define BOOT_MSG				\
 "\nLOADER:  Switched to aarch64 mode\nLOADER:  Entering ARM TRUSTED FIRMWARE\nLOADER:  CPU0 executes at 0x"
+#define RECOVERY_MSG				\
+"Warning: Running in recovery mode\n"
 
 .global start
 start:
@@ -195,14 +197,13 @@ reg_list_end:
  * +--------------------------------------------+
  */
 .=BL1_OFFSET
-.incbin "atf/bl1.bin"
+ .incbin "atf/bl1.bin"
 
 .=BL2_OFFSET
 .skip BL2_SIZE,0
 
 .=BL31_OFFSET
 .skip BL31_SIZE,0
-
 /*
  * +--------------------------------------------+
  * | 9. Reset and debug code			|
@@ -212,6 +213,8 @@ reg_list_end:
 reset:
 	isb
 
+	/* Setup a stack */
+	ldr	sp, =0x1000
 	/* loop until the system is ready; REG_SC_GEN1 is 0 at power-on  */
 	ldr	r0, =REG_BASE_SCTL
 	mov	r1, #1
@@ -224,16 +227,12 @@ wait_mux_finish:
 	/* init serial */
 	bl	uart_init
 
-	/* enable jtag support  */
-	mov	r1, #0x130
-	ldr	r4, =0xf8a21000
-	mov	r5, #0x0ec
-	mov	r6, #0x100
-0:
-	str	r1, [r4, r5]
-	add	r5, r5, #0x04
-	cmp	r5, r6
-	ble	0b
+	/* eMMC CRG init */
+	ldr	r0, =0xf8a220a0 // All taken from downstream fastboot driver
+	ldr	r1, =0x47103 // Enable all clocks, deassert all resets, sample phase 315, drive phase 180, clock rate 50MHz
+	str	r1, [r0]
+	ldr	r1, =0x40103 // Enable all clocks, deassert all resets, sample phase 0, drive phase 180, clock rate 50MHz
+	str	r1, [r0, #-4]
 
 	/* prepare the aarch64 jump address */
 	ldr	r4, =REG_PERI_CPU_RVBARADDR
@@ -259,10 +258,14 @@ wait_mux_finish:
 
 	mov	r0, #'\n'
 	bl	printch
-	adr	r0, str_version
+	ldr	r0, =#str_version
 	bl	printascii
-	adr	r0, str_aarch64
+	ldr	r0, =#str_aarch64
 	bl	printascii
+#ifdef RECOVERY
+	ldr	r0, =#str_recovery
+	bl	printascii
+#endif
 	ldr	r0, =BL1_BASE
 	bl	printhex
 	mov	r0, #'\n'
@@ -277,14 +280,23 @@ wait_mux_finish:
 	mcr p15, 0, r2, c12, c0, 2
 	isb
 	wfi
+.size reset, .-reset
 
+.global	panic
+.type	panic, %function
 panic:
 	b	panic
+.size panic, .-panic
 
+.section .rodata
 str_version:
 	.asciz	VERSION_MSG
 str_aarch64:
 	.asciz	BOOT_MSG
+#ifdef RECOVERY
+str_recovery:
+	.asciz	RECOVERY_MSG
+#endif
 
 /*
  * +--------------------------------------------+
@@ -292,11 +304,11 @@ str_aarch64:
  * +--------------------------------------------+
  */
 #ifdef RECOVERY
-.section .fip,#alloc
-.incbin "atf/fip.bin"
+.section .fip, "a"
+ .incbin "atf/fip.bin"
 #endif
 
-.section .tail,#alloc
+.section .tail, "a"
 
 _checked_area_reserve:
 	.fill 0x10,1,0
@@ -314,8 +326,8 @@ _boot_sign_area:
 _total_boot_area_end:
 
 #ifndef RECOVERY
-.section .fip,#alloc
-.incbin "atf/fip.bin"
+.section .fip, "a"
+ .incbin "atf/fip.bin"
 #endif
 
 .global _boot_end

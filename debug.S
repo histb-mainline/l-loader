@@ -53,6 +53,7 @@ uart_init:
 	bx	lr
 uart_base_addr_L0:
 	.word DEBUG_UART_PHYS
+.size uart_init, .-uart_init
 
 @-------------------------------------------
 @  Macros
@@ -80,6 +81,9 @@ uart_base_addr_L0:
 	.global printascii
 	.global printch
 	.global	printhex
+	.type printascii,	%function
+	.type printch,		%function
+	.type printhex,		%function
 
 /* print a 32-bit hexadecimal value passed via r0 */
 printhex:
@@ -97,6 +101,7 @@ printhex:
 	bne	1b
 	mov	r0, r2
 	b	printascii
+.size	printhex, .-printhex
 
 hexbuf:	.space 16
 	.ltorg
@@ -115,9 +120,11 @@ printascii:
 	teqne	r1, #0
 	bne	1b
 	mov	pc, lr
+.size	printascii, .-printascii
 
 printch:
 	addruart r3
 	mov	r1, r0
 	mov	r0, #0
 	b	1b
+.size	printch, .-printch
